@@ -42,7 +42,7 @@ public class Booking {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setInt(1, inputid);
 			ResultSet rs = ps.executeQuery();
-			if(rs.next()) {
+			while(rs.isLast()) {
 				System.out.println("\nyour id: "+rs.getInt(1));
 				System.out.println("booking time: "+rs.getTime(2));
 				System.out.println("booking date: "+rs.getDate(3));

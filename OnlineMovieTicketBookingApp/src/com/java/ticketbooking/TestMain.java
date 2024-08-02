@@ -19,8 +19,11 @@ public class TestMain {
 				System.out.println("Select Movie Useing id");
 		        int inputid=s.nextInt();
 				m.selectmovie(inputid);
+				if(m.isAvailable(inputid)) {
 			    m.noTicket(inputid);
-				
+				}else {
+					System.out.println("\nticket not available");
+				}
 				
 			}else
 				System.out.println("Exit");

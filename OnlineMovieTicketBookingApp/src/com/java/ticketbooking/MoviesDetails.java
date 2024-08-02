@@ -10,21 +10,45 @@ import java.util.Scanner;
 public class MoviesDetails {
 	int noticket;
 	
-	public void showMovie() {
+	public boolean isAvailable(int input) {
+		
 		try {
 			Connection con=DBConnection.getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select*from movielist");
-			while(rs.next()) {
-				System.out.println("Movie id: "+rs.getInt(1));
-				System.out.println("Movie Name: "+rs.getString(2));
-				System.out.println("Ticket Price: "+rs.getInt(3));
-				System.out.println("Show Time: "+rs.getTime(4));
-				System.out.println("Show Date: "+rs.getDate(5));
-				System.out.println("Available tickets: "+rs.getInt(6));
+			PreparedStatement ps= con.prepareStatement("select avl_ticket from movielist where id=? AND avl_ticket>0");
+			ps.setInt(1, input);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+			int avl_ticket=rs.getInt("avl_ticket");
+			if(avl_ticket>0&&avl_ticket>noticket) {
+				return true;
+			}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+		
+		
+	}
+	
+	
+	
+	public void showMovie() {
+		try {
+			Connection connection=DBConnection.getConnection();
+			Statement statement = connection.createStatement();
+			ResultSet resultset= statement.executeQuery("select*from movielist");
+			while(resultset.next()) {
+				System.out.println("Movie id: "+resultset.getInt(1));
+				System.out.println("Movie Name: "+resultset.getString(2));
+				System.out.println("Ticket Price: "+resultset.getInt(3));
+				System.out.println("Show Time: "+resultset.getTime(4));
+				System.out.println("Show Date: "+resultset.getDate(5));
+				System.out.println("Available tickets: "+resultset.getInt(6));
 				System.out.println();
 			}
-			con.close();
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -34,19 +58,19 @@ public class MoviesDetails {
         
         String query="select*from movielist where id=?";
         try {
-			Connection con=DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1,inputid);
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
-				System.out.println("Movie id: "+rs.getInt(1));
-				System.out.println("Movie Name: "+rs.getString(2));
-				System.out.println("Ticket Price: "+rs.getInt(3));
-				System.out.println("Show Time: "+rs.getTime(4));
-				System.out.println("Show Date: "+rs.getDate(5));
-				System.out.println("Available tickets: "+rs.getInt(6));
+			Connection connection=DBConnection.getConnection();
+			PreparedStatement preparestatement = connection.prepareStatement(query);
+			preparestatement.setInt(1,inputid);
+			ResultSet resultset= preparestatement.executeQuery();
+			while(resultset.next()) {
+				System.out.println("Movie id: "+resultset.getInt(1));
+				System.out.println("Movie Name: "+resultset.getString(2));
+				System.out.println("Ticket Price: "+resultset.getInt(3));
+				System.out.println("Show Time: "+resultset.getTime(4));
+				System.out.println("Show Date: "+resultset.getDate(5));
+				System.out.println("Available tickets: "+resultset.getInt(6));
 			}
-			con.close();
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -83,12 +107,14 @@ public class MoviesDetails {
 			total=ticketprice*noticket;
 				System.out.println("Total Price: "+total);
 			}
+			Booking b=new Booking();
+			b.addBooking(inputid, noticket, total);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		Booking b=new Booking();
-		b.addBooking(inputid,noticket,total);
+		
 
 	}
+	
 }

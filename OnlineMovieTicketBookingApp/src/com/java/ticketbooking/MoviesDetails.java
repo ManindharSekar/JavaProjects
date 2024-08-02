@@ -10,30 +10,6 @@ import java.util.Scanner;
 public class MoviesDetails {
 	int noticket;
 	
-	public boolean isAvailable(int input) {
-		
-		try {
-			Connection con=DBConnection.getConnection();
-			PreparedStatement ps= con.prepareStatement("select avl_ticket from movielist where id=? AND avl_ticket>0");
-			ps.setInt(1, input);
-			ResultSet rs = ps.executeQuery();
-			if(rs.next()) {
-			int avl_ticket=rs.getInt("avl_ticket");
-			if(avl_ticket>0&&avl_ticket>noticket) {
-				return true;
-			}
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-		
-		
-	}
-	
-	
-	
 	public void showMovie() {
 		try {
 			Connection connection=DBConnection.getConnection();
@@ -53,6 +29,8 @@ public class MoviesDetails {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	public void selectmovie(int inputid) {
         
         
@@ -76,39 +54,69 @@ public class MoviesDetails {
 		}
 	
 }
+	public boolean isAvailable(int input) {
+		
+		try {
+			Connection connnection=DBConnection.getConnection();
+			PreparedStatement ps= connnection.prepareStatement("select avl_ticket from movielist where id=? AND avl_ticket>0");
+			ps.setInt(1, input);
+			ResultSet resultset = ps.executeQuery();
+			if(resultset.next()) {
+			int avl_ticket=resultset.getInt("avl_ticket");
+			if(avl_ticket>0) {
+				return true;
+			}
+			}
+			connnection.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+		
+		
+	}
+	
 	public void  noTicket(int inputid) {
 		try {
-			Scanner s=new Scanner(System.in);
+			Scanner scanner=new Scanner(System.in);
 			System.out.println("\nNo of ticket you want");
-			noticket=s.nextInt();
+			noticket=scanner.nextInt();
 			String query="update movielist set avl_ticket=avl_ticket-? where id=? ";
-			Connection con=DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, noticket);
-			ps.setInt(2,inputid);
-			int row = ps.executeUpdate();
+			Connection connection=DBConnection.getConnection();
+			PreparedStatement preparestatement = connection.prepareStatement(query);
+			preparestatement.setInt(1, noticket);
+			preparestatement.setInt(2,inputid);
+			preparestatement.executeUpdate();
 			System.out.println("-------");
+			connection.close();
+			scanner.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		totalPrice(inputid,noticket);
 		
 	}
+	
+	
+	
 	public void totalPrice(int inputid,int noticket) {
 		int total = 0;
 		try {
 			String query="select ticketprice from movielist where id=?";
-			Connection con =DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, inputid);
-			ResultSet rs = ps.executeQuery();
-			if(rs.next()) {
-			int ticketprice=rs.getInt("ticketprice");
+			Connection connection =DBConnection.getConnection();
+			PreparedStatement preparestatement = connection.prepareStatement(query);
+			preparestatement.setInt(1, inputid);
+			ResultSet resultset = preparestatement.executeQuery();
+			if(resultset.next()) {
+			int ticketprice=resultset.getInt("ticketprice");
 			total=ticketprice*noticket;
 				System.out.println("Total Price: "+total);
 			}
-			Booking b=new Booking();
-			b.addBooking(inputid, noticket, total);
+			Booking booking=new Booking();
+			booking.addBooking(inputid, noticket, total);
+			
+			connection.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

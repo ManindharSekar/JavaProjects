@@ -11,6 +11,32 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 public class Booking {
+	
+	public void viewBookings() {
+		String query="select bookinglist.id,movielist.id,movielist.mname,movielist.showdate,movielist.showtime,bookinglist.no_ticket,bookinglist.total from bookinglist inner join movielist on movielist.id=bookinglist.b_id where bookinglist.id=?";
+		try {
+			Connection connection=DBConnection.getConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(query);
+			Scanner scanner=new Scanner(System.in);
+			System.out.println("Enter Your Bookig id");
+			int userid=scanner.nextInt();
+			preparedstatement.setInt(1,userid);
+			ResultSet resultset = preparedstatement.executeQuery();
+			if(resultset.next()) {
+				System.out.println("Your booking id: "+resultset.getInt(1));
+				System.out.println("Movie id: "+resultset.getInt(2));
+				System.out.println("Movie name: "+resultset.getString(3));
+				System.out.println("Show date: "+resultset.getDate(4));
+				System.out.println("Show Time: "+resultset.getTime(5));
+				System.out.println("Number of Ticket: "+resultset.getInt(6));
+				System.out.println("Total Price: "+resultset.getInt(7));
+			}
+			scanner.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public int addBooking(int inputid,int noticket,int total) {
 		try {
@@ -26,8 +52,8 @@ public class Booking {
 			ps.setInt(5, inputid);
 			int rows = ps.executeUpdate();
 			System.out.println("-------");
-			Booking b=new Booking();
-			b.showBookingDetails(inputid);
+			Booking booking=new Booking();
+			booking.showBookingDetails(inputid);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -36,21 +62,22 @@ public class Booking {
 	
 
 	public void showBookingDetails(int inputid) {
-		String query="select bookinglist.id,bookinglist.b_time,bookinglist.b_date,bookinglist.no_ticket,bookinglist.total,movielist.mname from bookinglist inner join movielist on movielist.id=bookinglist.b_id where bookinglist.b_id=?";
+		String query="select bookinglist.id,bookinglist.b_time,bookinglist.b_date,bookinglist.no_ticket,bookinglist.total,movielist.mname from bookinglist inner join movielist on movielist.id=bookinglist.b_id where bookinglist.b_id=? order by id desc ";
 		try {
-			Connection con=DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, inputid);
-			ResultSet rs = ps.executeQuery();
-			while(rs.isLast()) {
-				System.out.println("\nyour id: "+rs.getInt(1));
-				System.out.println("booking time: "+rs.getTime(2));
-				System.out.println("booking date: "+rs.getDate(3));
-				System.out.println("no of ticket: "+rs.getInt(4));
-				System.out.println("total price: "+rs.getInt(5));
-				System.out.println("movie name: "+rs.getString(6));
+			Connection connection=DBConnection.getConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(query);
+			preparedstatement.setInt(1, inputid);
+			ResultSet resultset = preparedstatement.executeQuery();
+			if(resultset.next()) {
+				System.out.println("\nyour id: "+resultset.getInt(1));
+				System.out.println("booking time: "+resultset.getTime(2));
+				System.out.println("booking date: "+resultset.getDate(3));
+				System.out.println("no of ticket: "+resultset.getInt(4));
+				System.out.println("total price: "+resultset.getInt(5));
+				System.out.println("movie name: "+resultset.getString(6));
 				System.out.println();
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -4,28 +4,45 @@ import java.util.Scanner;
 
 public class ValidateAccAndPin {
 
-	public void checkAccountAndPin() {
-		CheckAccountAndPin checkaccountnadpin= new CheckAccountAndPin();
+	public void checkAccount() {
+		CheckAccountAndPin checkaccountnadpin = new CheckAccountAndPin();
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Account Number");
-		int acc_no = scanner.nextInt();
-		System.out.println("Enter your pin");
-		int pinno = scanner.nextInt();
-		if (checkaccountnadpin.isAccCorrect(acc_no)) {
-			if (checkaccountnadpin.isPinCorrect(acc_no, pinno)) {
-				checkChooseOption(acc_no);
+		String acc_no = scanner.next();
+		if (acc_no.matches("[0-9]{8}")) {
+			if (checkaccountnadpin.isAccCorrect(acc_no)) {
+				checkPin(acc_no);
+
 			} else {
-				System.out.println("you enter wrong pin please re-enter");
-				checkAccountAndPin();
+				System.out.println("You Entered Wrong Account Number Retry");
+				checkAccount();
 			}
 		} else {
-			System.out.println("You Entered Wrong Account Number Retry");
-			checkAccountAndPin();
+			System.out.println("Account Number is incorrect");
+			checkAccount();
 		}
 
 	}
 
-	public void checkChooseOption(int acc_no) {
+	public void checkPin(String acc_no) {
+		CheckAccountAndPin checkaccountnadpin = new CheckAccountAndPin();
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter your pin");
+		String pinno = scanner.next();
+		if (pinno.matches("[0-9]{4}")) {
+			if (checkaccountnadpin.isPinCorrect(acc_no, pinno)) {
+				checkChooseOption(acc_no);
+			} else {
+				System.out.println("you enter wrong pin please re-enter");
+				checkPin(acc_no);
+			}
+		} else {
+			System.out.println("Pin number is incorrect");
+			checkPin(acc_no);
+		}
+	}
+
+	public void checkChooseOption(String acc_no) {
 
 		DebitAndCredit debitandcredit = new DebitAndCredit();
 		StatementEnquery statementenquery = new StatementEnquery();
@@ -38,12 +55,12 @@ public class ValidateAccAndPin {
 		switch (chooseOption) {
 		case 1:
 			System.out.println("Enter Withdrawl Amount");
-			int depitamount = scanner.nextInt();
+			double depitamount = scanner.nextDouble();
 			debitandcredit.withdrawl(acc_no, depitamount);
 			break;
 		case 2:
 			System.out.println("Enter your deposit amount");
-			int creditamount = scanner.nextInt();
+			double creditamount = scanner.nextDouble();
 			debitandcredit.deposit(acc_no, creditamount);
 			break;
 		case 3:
@@ -51,16 +68,16 @@ public class ValidateAccAndPin {
 			break;
 		case 4:
 			System.out.println("Enter Transfer Account no");
-			int transferacc = scanner.nextInt();
+			String transferacc = scanner.next();
 			System.out.println("Enter amount to transfer");
-			int transferamount = scanner.nextInt();
-			moneytransfer.TransferedAccount(acc_no, transferacc, transferamount);
+			double transferamount = scanner.nextDouble();
+			moneytransfer.transferAccount(acc_no, transferacc, transferamount);
 			break;
 		case 5:
 			statementenquery.statement(acc_no);
 			break;
 		case 6:
-			System.out.println("Exit");
+			System.out.println("Exited");
 			break;
 		default:
 			System.out.println("you enter wrong input please try again");

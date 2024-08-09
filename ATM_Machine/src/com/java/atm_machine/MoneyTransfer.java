@@ -11,83 +11,96 @@ import java.time.LocalTime;
 
 public class MoneyTransfer {
 	int currentbalance;
+	int currentbalance1;
 
-	public int TransferedAccount(int acc_no, int transferacc, int transferamount) {
-		String squery = "select balance from statements where acc_no=?";
-		String updateb = "update statements set balance = ? where acc_no = ?";
-		String query = "insert into statements(acc_no,date,time,credit,transaction,balance) values(?,?,?,?,?,?)";
+	public void transferAccount(String acc_no, String transferacc, double transferamount) {
+		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
+		String updateQuery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
+		String insertQuery = "insert into statements(acc_no,date,time,transaction,debit,balance) values(?,?,?,?,?,?)";
 
 		try {
 			Connection connection = DBConnection.getConnection();
 
-			PreparedStatement preparestatement1 = connection.prepareStatement(squery);
-			preparestatement1.setInt(1, acc_no);
-			ResultSet rs = preparestatement1.executeQuery();
+			PreparedStatement preparestatement1 = connection.prepareStatement(selectQuery);
+			preparestatement1.setString(1, acc_no);
+			ResultSet resultSet = preparestatement1.executeQuery();
 
-			if (rs.next()) {
-				currentbalance = rs.getInt("balance");
+			if (resultSet.next()) {
+				currentbalance = resultSet.getInt("balance");
 			}
-			int newbalance = currentbalance + transferamount;
+			if (currentbalance > 0 && currentbalance >= transferamount) {
 
-			PreparedStatement preparestatement2= connection.prepareStatement(updateb);
-			preparestatement2.setInt(1, newbalance);
-			preparestatement2.setInt(2, transferacc);
-			int row1 = preparestatement2.executeUpdate();
-			System.out.println("----------------------");
+				double newbalance1 = currentbalance - transferamount;
 
-			PreparedStatement preparestatement3= connection.prepareStatement(query);
-			preparestatement3.setInt(1, transferacc);
-			preparestatement3.setDate(2, Date.valueOf(LocalDate.now()));
-			preparestatement3.setTime(3, Time.valueOf(LocalTime.now()));
-			preparestatement3.setInt(4, transferamount);
-			preparestatement3.setInt(5, acc_no);
-			preparestatement3.setInt(6, newbalance);
-			int row = preparestatement3.executeUpdate();
-			System.out.println("****Amount Transfred to: " + transferacc + "****");
+				PreparedStatement preparestatement2 = connection.prepareStatement(insertQuery);
+				preparestatement2.setString(1, acc_no);
+				preparestatement2.setDate(2, Date.valueOf(LocalDate.now()));
+				preparestatement2.setTime(3, Time.valueOf(LocalTime.now()));
+				preparestatement2.setString(4, transferacc);
+				preparestatement2.setDouble(5, transferamount);
+				preparestatement2.setDouble(6, newbalance1);
+				int row3 = preparestatement2.executeUpdate();
+				System.out.println("----------------------");
+				System.out.println("****Your amount has been transfered sucssfully****");
+
+				PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
+				preparestatement3.setDouble(1, transferamount);
+				preparestatement3.setString(2, acc_no);
+				int row2 = preparestatement3.executeUpdate();
+
+				TransferedAccount(acc_no, transferacc, transferamount);
+				ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
+				validateaccandpin.checkChooseOption(acc_no);
+			} else {
+				System.out.println("insufficient balance");
+				ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
+				validateaccandpin.checkChooseOption(acc_no);
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return transferAccount(acc_no, transferacc, transferamount);
+
 	}
 
-	public int transferAccount(int acc_no, int transferacc, int transferamount) {
-		String q1 = "select balance from statements where acc_no=?";
-		String updatequery = "update statements set balance=? where acc_no=?";
-		String query1 = "insert into statements(acc_no,date,time,transaction,debit,balance) values(?,?,?,?,?,?)";
+	public void TransferedAccount(String acc_no, String transferacc, double transferamount) {
+		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
+		String updateQuery = "update statements set balance = ? where acc_no = ? and id ORDER BY id DESC LIMIT 1";
+		String insertQuery = "insert into statements(acc_no,date,time,credit,transaction,balance) values(?,?,?,?,?,?)";
 
 		try {
 			Connection connection = DBConnection.getConnection();
 
-			PreparedStatement preparestatement4 = connection.prepareStatement(q1);
-			preparestatement4.setInt(1, acc_no);
-			ResultSet rs1 = preparestatement4.executeQuery();
+			PreparedStatement preparestatement1 = connection.prepareStatement(selectQuery);
+			preparestatement1.setString(1, transferacc);
+			ResultSet resultSet = preparestatement1.executeQuery();
 
-			if (rs1.next()) {
-				currentbalance = rs1.getInt("balance");
+			if (resultSet.next()) {
+				currentbalance1 = resultSet.getInt("balance");
 			}
-			int newbalance1 = currentbalance - transferamount;
 
-			PreparedStatement preparestatement5 = connection.prepareStatement(updatequery);
-			preparestatement5.setInt(1, newbalance1);
-			preparestatement5.setInt(2, acc_no);
-			int row2 = preparestatement5.executeUpdate();
-			System.out.println("****Your amount has been transfered sucssfully****");
+			double newbalance = currentbalance1 + transferamount;
 
-			PreparedStatement preparestatement6 = connection.prepareStatement(query1);
-			preparestatement6.setInt(1, acc_no);
-			preparestatement6.setDate(2, Date.valueOf(LocalDate.now()));
-			preparestatement6.setTime(3, Time.valueOf(LocalTime.now()));
-			preparestatement6.setInt(4, transferacc);
-			preparestatement6.setInt(5, transferamount);
-			preparestatement6.setInt(6, newbalance1);
-			int row3 = preparestatement6.executeUpdate();
+			PreparedStatement preparestatement2 = connection.prepareStatement(insertQuery);
+			preparestatement2.setString(1, transferacc);
+			preparestatement2.setDate(2, Date.valueOf(LocalDate.now()));
+			preparestatement2.setTime(3, Time.valueOf(LocalTime.now()));
+			preparestatement2.setDouble(4, transferamount);
+			preparestatement2.setString(5, acc_no);
+			preparestatement2.setDouble(6, newbalance);
+			int row = preparestatement2.executeUpdate();
+
+			PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
+			preparestatement3.setDouble(1, newbalance);
+			preparestatement3.setString(2, transferacc);
+			int row1 = preparestatement3.executeUpdate();
+			System.out.println("****Amount Transfred to: " + transferacc + "****");
 			System.out.println("----------------------");
-			ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
-			validateaccandpin.checkChooseOption(acc_no);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return transferamount;
+
 	}
 
 }

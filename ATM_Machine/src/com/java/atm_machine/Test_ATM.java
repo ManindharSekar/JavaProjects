@@ -9,7 +9,7 @@ public class Test_ATM {
 		// aa.add_account();
 		ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
 		System.out.println("Welcome To My Bank ATM.");
-		validateaccandpin.checkAccountAndPin();
+		validateaccandpin.checkAccount();
 
 	}
 

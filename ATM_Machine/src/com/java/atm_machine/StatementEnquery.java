@@ -8,12 +8,12 @@ import java.sql.Statement;
 
 public class StatementEnquery {
 
-	public void balance(int acc_no) {
+	public void balance(String acc_no) {
 		try {
-			String query = "select balance from statements where acc_no=?";
+			String query = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			Connection con = DBConnection.getConnection();
 			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, acc_no);
+			ps.setString(1, acc_no);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				System.out.println("-----------------------------");
@@ -28,12 +28,12 @@ public class StatementEnquery {
 
 	}
 
-	public void statement(int acc_no) {
+	public void statement(String acc_no) {
 		String query = "select accountdetails.name,accountdetails.account_no,statements.date,statements.time,statements.credit,statements.debit,statements.balance from accountdetails inner join statements on accountdetails.account_no=statements.acc_no where accountdetails.account_no=?";
 		try {
 			Connection con = DBConnection.getConnection();
 			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, acc_no);
+			ps.setString(1, acc_no);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				System.out.println("-----Name: " + rs.getString(1) + "-----");

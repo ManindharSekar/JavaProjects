@@ -12,39 +12,39 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 public class DebitAndCredit {
-	int currentbalance;
+	double currentbalance;
+	double newbalance;
 
-	public int deposit(int acc_no, int creditamount) {
+	public int deposit(String acc_no, double creditamount) {
 		try {
-			String squery = "select balance from statements where acc_no=?";
-			String updateb = "update statements set balance = ? where acc_no = ?";
+			String squery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			String query = "insert into statements(acc_no,date,time,credit,balance) values(?,?,?,?,?)";
-
+			String updateb = "update statements set balance = ? where acc_no = ? and id ORDER BY id DESC LIMIT 1";
 			Connection con = DBConnection.getConnection();
 
 			PreparedStatement ps1 = con.prepareStatement(squery);
-			ps1.setInt(1, acc_no);
+			ps1.setString(1, acc_no);
 			ResultSet rs = ps1.executeQuery();
 
 			if (rs.next()) {
 				currentbalance = rs.getInt("balance");
 			}
-			int newbalance = currentbalance + creditamount;
-
-			PreparedStatement ps2 = con.prepareStatement(updateb);
-			ps2.setInt(1, newbalance);
-			ps2.setInt(2, acc_no);
-			ps2.setInt(3, creditamount);
-			int row1 = ps2.executeUpdate();
+			double newbalance = currentbalance + creditamount;
 
 			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, acc_no);
+			ps.setString(1, acc_no);
 			ps.setDate(2, Date.valueOf(LocalDate.now()));
 			ps.setTime(3, Time.valueOf(LocalTime.now()));
-			ps.setInt(4, creditamount);
-			ps.setInt(5, newbalance);
+			ps.setDouble(4, creditamount);
+			ps.setDouble(5, newbalance);
 			int row = ps.executeUpdate();
-			System.out.println("****Amount Sucessfully Credit in your accont****");
+
+			PreparedStatement ps2 = con.prepareStatement(updateb);
+			ps2.setDouble(1, newbalance);
+			ps2.setString(2, acc_no);
+			int row1 = ps2.executeUpdate();
+
+			System.out.println("****Amount Sucessfully Credit in your account****");
 			ValidateAccAndPin vap = new ValidateAccAndPin();
 			vap.checkChooseOption(acc_no);
 		} catch (SQLException e) {
@@ -54,39 +54,49 @@ public class DebitAndCredit {
 
 	}
 
-	public int withdrawl(int acc_no, int debitamount) {
+	public int withdrawl(String acc_no, double debitamount) {
 		try {
-			String q1 = "select balance from statements where acc_no=?";
-			String updatequery = "update statements set balance=? where acc_no=?";
+			String q1 = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
+			String updatequery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			String query = "insert into statements(acc_no,date,time,debit,balance) values(?,?,?,?,?)";
 
 			Connection con = DBConnection.getConnection();
 
 			PreparedStatement ps1 = con.prepareStatement(q1);
-			ps1.setInt(1, acc_no);
+			ps1.setString(1, acc_no);
 			ResultSet rs = ps1.executeQuery();
 
 			if (rs.next()) {
 				currentbalance = rs.getInt("balance");
 			}
-			int newbalance = currentbalance - debitamount;
+			if (currentbalance > 0) {
+				newbalance = currentbalance - debitamount;
 
-			PreparedStatement ps2 = con.prepareStatement(updatequery);
-			ps2.setInt(1, newbalance);
-			ps2.setInt(2, acc_no);
-			
-			int row1 = ps2.executeUpdate();
+				if (newbalance < debitamount) {
 
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, acc_no);
-			ps.setDate(2, Date.valueOf(LocalDate.now()));
-			ps.setTime(3, Time.valueOf(LocalTime.now()));
-			ps.setInt(4, debitamount);
-			ps.setInt(5, newbalance);
-			int row = ps.executeUpdate();
-			System.out.println("*****Take Amount*****");
-			ValidateAccAndPin vap = new ValidateAccAndPin();
-			vap.checkChooseOption(acc_no);
+					PreparedStatement ps = con.prepareStatement(query);
+					ps.setString(1, acc_no);
+					ps.setDate(2, Date.valueOf(LocalDate.now()));
+					ps.setTime(3, Time.valueOf(LocalTime.now()));
+					ps.setDouble(4, debitamount);
+					ps.setDouble(5, debitamount);
+					int row = ps.executeUpdate();
+
+					PreparedStatement ps2 = con.prepareStatement(updatequery);
+					ps2.setDouble(1, debitamount);
+					;
+					ps2.setString(2, acc_no);
+					int row1 = ps2.executeUpdate();
+
+					System.out.println("*****Take Amount*****");
+					ValidateAccAndPin vap = new ValidateAccAndPin();
+					vap.checkChooseOption(acc_no);
+				}
+			} else {
+				System.out.println("insufficient balance retry");
+				ValidateAccAndPin vap = new ValidateAccAndPin();
+				vap.checkChooseOption(acc_no);
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -95,5 +105,4 @@ public class DebitAndCredit {
 		return 0;
 
 	}
-
 }

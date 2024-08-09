@@ -2,13 +2,13 @@ package com.java.atm_machine;
 
 public class Account_details {
 	private String name;
-	private int acc_no;
-	private int pin_no;
+	private String acc_no;
+	private String pin_no;
 
-	public Account_details(String name, int acc_no, int pin_no) {
+	public Account_details(String name, String acc_no2, String pin_no2) {
 		this.name = name;
-		this.acc_no = acc_no;
-		this.pin_no = pin_no;
+		this.acc_no = acc_no2;
+		this.pin_no = pin_no2;
 	}
 
 	public void setName(String name) {
@@ -19,19 +19,19 @@ public class Account_details {
 		return name;
 	}
 
-	public void setAcc_no(int acc_no) {
+	public void setAcc_no(String acc_no) {
 		this.acc_no = acc_no;
 	}
 
-	public int getAcc_no() {
+	public String getAcc_no() {
 		return acc_no;
 	}
 
-	public void setPin_no(int pin_no) {
+	public void setPin_no(String pin_no) {
 		this.pin_no = pin_no;
 	}
 
-	public int getPin_no() {
+	public String getPin_no() {
 		return pin_no;
 	}
 

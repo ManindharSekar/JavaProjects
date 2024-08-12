@@ -46,10 +46,10 @@ public class LoginService {
 
 	public void listATMOptions(String acc_no) {
 
-		DebitAndCredit debitandcredit = new DebitAndCredit();
+		DebitAndCreditService debitandcredit = new DebitAndCreditService();
 		AccountStatementService statementenquery = new AccountStatementService();
 		MoneyTransferService moneytransfer = new MoneyTransferService();
-		CheckAccountAndPin checkAccountAndPin=new CheckAccountAndPin();
+		CheckAccountAndPin checkAccountAndPin = new CheckAccountAndPin();
 		System.out.println("1.Withdrawal \n2.Deposit \n3.Balance \n4.Money_Transfer \n5.Statement \n6.exit");
 		System.out.println("Choose any option");
 		Scanner scanner = new Scanner(System.in);
@@ -74,9 +74,9 @@ public class LoginService {
 			String transferacc = scanner.next();
 			System.out.println("Enter amount to transfer");
 			double transferamount = scanner.nextDouble();
-			if(checkAccountAndPin.validateAccount(transferacc)) {
-			moneytransfer.transferMoney(acc_no, transferacc, transferamount);
-			}else {
+			if (checkAccountAndPin.validateAccount(transferacc)) {
+				moneytransfer.transferMoney(acc_no, transferacc, transferamount);
+			} else {
 				System.out.println("You Enter Wrong Account Number try again");
 				listATMOptions(acc_no);
 			}

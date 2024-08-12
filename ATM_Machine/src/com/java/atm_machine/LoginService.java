@@ -72,9 +72,10 @@ public class LoginService {
 		case 4:
 			System.out.println("Enter Transfer Account no");
 			String transferacc = scanner.next();
-			System.out.println("Enter amount to transfer");
-			double transferamount = scanner.nextDouble();
+			
 			if (checkAccountAndPin.validateAccount(transferacc)) {
+				System.out.println("Enter amount to transfer");
+				double transferamount = scanner.nextDouble();
 				moneyTransferService.transferMoney(acc_no, transferacc, transferamount);
 			} else {
 				System.out.println("You Enter Wrong Account Number try again");

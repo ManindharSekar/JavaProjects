@@ -13,7 +13,7 @@ public class MoneyTransferService {
 	int currentbalance;
 	int currentbalance1;
 
-	public void transferMoney(String fromAccount, String toAccount, double transferamount) {
+	public void transferMoney(String fromAccount, String toAccount, double sendingAmount) {
 		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String updateQuery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String insertQuery = "insert into statements(acc_no,date,time,transaction,debit,balance) values(?,?,?,?,?,?)";
@@ -28,16 +28,16 @@ public class MoneyTransferService {
 			if (resultSet.next()) {
 				currentbalance = resultSet.getInt("balance");
 			}
-			if (currentbalance > 0 && currentbalance >= transferamount) {
+			if (currentbalance > 0 && currentbalance >= sendingAmount) {
 
-				double newbalance1 = currentbalance - transferamount;
+				double newbalance1 = currentbalance - sendingAmount;
 
 				PreparedStatement preparestatement2 = connection.prepareStatement(insertQuery);
 				preparestatement2.setString(1, fromAccount);
 				preparestatement2.setDate(2, Date.valueOf(LocalDate.now()));
 				preparestatement2.setTime(3, Time.valueOf(LocalTime.now()));
 				preparestatement2.setString(4, toAccount);
-				preparestatement2.setDouble(5, transferamount);
+				preparestatement2.setDouble(5, sendingAmount);
 				preparestatement2.setDouble(6, newbalance1);
 				preparestatement2.executeUpdate();
 
@@ -49,13 +49,13 @@ public class MoneyTransferService {
 				preparestatement3.setString(2, fromAccount);
 				preparestatement3.executeUpdate();
 
-				TransferedMoney(fromAccount, toAccount, transferamount);
-				LoginService validateaccandpin = new LoginService();
-				validateaccandpin.listATMOptions(fromAccount);
+				TransferedMoney(fromAccount, toAccount, sendingAmount);
+				LoginService loginService = new LoginService();
+				loginService.listATMOptions(fromAccount);
 			} else {
 				System.out.println("insufficient balance");
-				LoginService validateaccandpin = new LoginService();
-				validateaccandpin.listATMOptions(fromAccount);
+				LoginService loginService = new LoginService();
+				loginService.listATMOptions(fromAccount);
 			}
 			connection.close();
 
@@ -65,7 +65,7 @@ public class MoneyTransferService {
 
 	}
 
-	public void TransferedMoney(String fromAccount, String toAccount, double transferamount) {
+	public void TransferedMoney(String fromAccount, String toAccount, double receivingAmount) {
 		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String updateQuery = "update statements set balance = ? where acc_no = ? and id ORDER BY id DESC LIMIT 1";
 		String insertQuery = "insert into statements(acc_no,date,time,credit,transaction,balance) values(?,?,?,?,?,?)";
@@ -81,13 +81,13 @@ public class MoneyTransferService {
 				currentbalance1 = resultSet.getInt("balance");
 			}
 
-			double newbalance = currentbalance1 + transferamount;
+			double newbalance = currentbalance1 + receivingAmount;
 
 			PreparedStatement preparestatement2 = connection.prepareStatement(insertQuery);
 			preparestatement2.setString(1, toAccount);
 			preparestatement2.setDate(2, Date.valueOf(LocalDate.now()));
 			preparestatement2.setTime(3, Time.valueOf(LocalTime.now()));
-			preparestatement2.setDouble(4, transferamount);
+			preparestatement2.setDouble(4, receivingAmount);
 			preparestatement2.setString(5, toAccount);
 			preparestatement2.setDouble(6, newbalance);
 			preparestatement2.executeUpdate();

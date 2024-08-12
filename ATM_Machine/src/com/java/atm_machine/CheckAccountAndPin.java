@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class CheckAccountAndPin {
 
-	public boolean validate(String acc_no) {
+	public boolean validateAccount(String acc_no) {
 		try {
 			String selectQuery = "select* from AccountDetails where account_no=?";
 			Connection connection = DBConnection.getConnection();

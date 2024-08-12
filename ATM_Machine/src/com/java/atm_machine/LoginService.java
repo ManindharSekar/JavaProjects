@@ -10,7 +10,7 @@ public class LoginService {
 		System.out.println("Account Number");
 		String acc_no = scanner.next();
 		if (acc_no.matches("[0-9]{8}")) {
-			if (checkaccountnadpin.validate(acc_no)) {
+			if (checkaccountnadpin.validateAccount(acc_no)) {
 				checkPin(acc_no);
 
 			} else {
@@ -49,6 +49,7 @@ public class LoginService {
 		DebitAndCredit debitandcredit = new DebitAndCredit();
 		AccountStatementService statementenquery = new AccountStatementService();
 		MoneyTransferService moneytransfer = new MoneyTransferService();
+		CheckAccountAndPin checkAccountAndPin=new CheckAccountAndPin();
 		System.out.println("1.Withdrawal \n2.Deposit \n3.Balance \n4.Money_Transfer \n5.Statement \n6.exit");
 		System.out.println("Choose any option");
 		Scanner scanner = new Scanner(System.in);
@@ -73,7 +74,12 @@ public class LoginService {
 			String transferacc = scanner.next();
 			System.out.println("Enter amount to transfer");
 			double transferamount = scanner.nextDouble();
+			if(checkAccountAndPin.validateAccount(transferacc)) {
 			moneytransfer.transferMoney(acc_no, transferacc, transferamount);
+			}else {
+				System.out.println("You Enter Wrong Account Number try again");
+				listATMOptions(acc_no);
+			}
 			break;
 		case 5:
 			statementenquery.printStatement(acc_no);

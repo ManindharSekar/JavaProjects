@@ -45,7 +45,7 @@ public class MoneyTransferService {
 				System.out.println("****Your amount has been transfered sucssfully****");
 
 				PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
-				preparestatement3.setDouble(1, transferamount);
+				preparestatement3.setDouble(1, newbalance1);
 				preparestatement3.setString(2, fromAccount);
 				preparestatement3.executeUpdate();
 

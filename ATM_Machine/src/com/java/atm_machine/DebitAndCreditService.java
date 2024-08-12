@@ -15,7 +15,7 @@ public class DebitAndCreditService {
 	double currentBalance;
 	double newBalance;
 
-	public void deposit(String acc_no, double creditAmount) {
+	public void deposit(String accountNumber, double creditAmount) {
 		try {
 			String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			String insertQuery = "insert into statements(acc_no,date,time,credit,balance) values(?,?,?,?,?)";
@@ -23,7 +23,7 @@ public class DebitAndCreditService {
 			Connection connection = DBConnection.getConnection();
 
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
-			prepareStatement.setString(1, acc_no);
+			prepareStatement.setString(1, accountNumber);
 			ResultSet resultSet = prepareStatement.executeQuery();
 
 			if (resultSet.next()) {
@@ -32,7 +32,7 @@ public class DebitAndCreditService {
 			double newbalance = currentBalance + creditAmount;
 
 			PreparedStatement prepareStatement1 = connection.prepareStatement(insertQuery);
-			prepareStatement1.setString(1, acc_no);
+			prepareStatement1.setString(1, accountNumber);
 			prepareStatement1.setDate(2, Date.valueOf(LocalDate.now()));
 			prepareStatement1.setTime(3, Time.valueOf(LocalTime.now()));
 			prepareStatement1.setDouble(4, creditAmount);
@@ -41,12 +41,12 @@ public class DebitAndCreditService {
 
 			PreparedStatement prepareStatement2 = connection.prepareStatement(updateQuery);
 			prepareStatement2.setDouble(1, newbalance);
-			prepareStatement2.setString(2, acc_no);
+			prepareStatement2.setString(2, accountNumber);
 			prepareStatement2.executeUpdate();
 
 			System.out.println("****Amount Sucessfully Credit in your account****");
 			LoginService loginService = new LoginService();
-			loginService.listATMOptions(acc_no);
+			loginService.listATMOptions(accountNumber);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

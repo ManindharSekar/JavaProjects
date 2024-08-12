@@ -10,26 +10,26 @@ import java.sql.Time;
 import java.util.Calendar;
 import java.util.Scanner;
 
-public class Booking {
+public class BookingService {
 	
 	public void viewBookings() {
-		String query="select bookinglist.id,movielist.id,movielist.mname,movielist.showdate,movielist.showtime,bookinglist.no_ticket,bookinglist.total from bookinglist inner join movielist on movielist.id=bookinglist.b_id where bookinglist.id=?";
+		String selectQuery="select bookinglist.id,movielist.id,movielist.mname,movielist.showdate,movielist.showtime,bookinglist.no_ticket,bookinglist.total from bookinglist inner join movielist on movielist.id=bookinglist.b_id where bookinglist.id=?";
 		try {
 			Connection connection=DBConnection.getConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(query);
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
 			Scanner scanner=new Scanner(System.in);
 			System.out.println("Enter Your Bookig id");
-			int userid=scanner.nextInt();
-			preparedstatement.setInt(1,userid);
-			ResultSet resultset = preparedstatement.executeQuery();
-			if(resultset.next()) {
-				System.out.println("Your booking id: "+resultset.getInt(1));
-				System.out.println("Movie id: "+resultset.getInt(2));
-				System.out.println("Movie name: "+resultset.getString(3));
-				System.out.println("Show date: "+resultset.getDate(4));
-				System.out.println("Show Time: "+resultset.getTime(5));
-				System.out.println("Number of Ticket: "+resultset.getInt(6));
-				System.out.println("Total Price: "+resultset.getInt(7));
+			int userId=scanner.nextInt();
+			preparedStatement.setInt(1,userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()) {
+				System.out.println("Your booking id: "+resultSet.getInt(1));
+				System.out.println("Movie id: "+resultSet.getInt(2));
+				System.out.println("Movie name: "+resultSet.getString(3));
+				System.out.println("Show date: "+resultSet.getDate(4));
+				System.out.println("Show Time: "+resultSet.getTime(5));
+				System.out.println("Number of Ticket: "+resultSet.getInt(6));
+				System.out.println("Total Price: "+resultSet.getInt(7));
 			}
 			scanner.close();
 			connection.close();
@@ -40,9 +40,9 @@ public class Booking {
 
 	public int addBooking(int inputid,int noticket,int total) {
 		try {
-			String query="insert into bookinglist(b_time,b_date,no_ticket,total,b_id) values(?,?,?,?,?)";
+			String insertQuery="insert into bookinglist(b_time,b_date,no_ticket,total,b_id) values(?,?,?,?,?)";
 			Connection con=DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
+			PreparedStatement ps = con.prepareStatement(insertQuery);
 			Time currentTime = new Time(Calendar.getInstance().getTimeInMillis());
 			ps.setTime(1, currentTime);
 			Date currentDate = new Date(Calendar.getInstance().getTimeInMillis());
@@ -52,7 +52,7 @@ public class Booking {
 			ps.setInt(5, inputid);
 			int rows = ps.executeUpdate();
 			System.out.println("-------");
-			Booking booking=new Booking();
+			BookingService booking=new BookingService();
 			booking.showBookingDetails(inputid);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -65,9 +65,9 @@ public class Booking {
 		String query="select bookinglist.id,bookinglist.b_time,bookinglist.b_date,bookinglist.no_ticket,bookinglist.total,movielist.mname from bookinglist inner join movielist on movielist.id=bookinglist.b_id where bookinglist.b_id=? order by id desc ";
 		try {
 			Connection connection=DBConnection.getConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(query);
-			preparedstatement.setInt(1, inputid);
-			ResultSet resultset = preparedstatement.executeQuery();
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, inputid);
+			ResultSet resultset = preparedStatement.executeQuery();
 			if(resultset.next()) {
 				System.out.println("\nyour id: "+resultset.getInt(1));
 				System.out.println("booking time: "+resultset.getTime(2));

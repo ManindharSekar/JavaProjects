@@ -14,14 +14,14 @@ public class MoviesDetails {
 		try {
 			Connection connection=DBConnection.getConnection();
 			Statement statement = connection.createStatement();
-			ResultSet resultset= statement.executeQuery("select*from movielist");
-			while(resultset.next()) {
-				System.out.println("Movie id: "+resultset.getInt(1));
-				System.out.println("Movie Name: "+resultset.getString(2));
-				System.out.println("Ticket Price: "+resultset.getInt(3));
-				System.out.println("Show Time: "+resultset.getTime(4));
-				System.out.println("Show Date: "+resultset.getDate(5));
-				System.out.println("Available tickets: "+resultset.getInt(6));
+			ResultSet resultSet= statement.executeQuery("select*from movielist");
+			while(resultSet.next()) {
+				System.out.println("Movie id: "+resultSet.getInt(1));
+				System.out.println("Movie Name: "+resultSet.getString(2));
+				System.out.println("Ticket Price: "+resultSet.getInt(3));
+				System.out.println("Show Time: "+resultSet.getTime(4));
+				System.out.println("Show Date: "+resultSet.getDate(5));
+				System.out.println("Available tickets: "+resultSet.getInt(6));
 				System.out.println();
 			}
 			connection.close();
@@ -34,10 +34,10 @@ public class MoviesDetails {
 	public void selectmovie(int inputid) {
         
         
-        String query="select*from movielist where id=?";
+        String selectQuery="select*from movielist where id=?";
         try {
 			Connection connection=DBConnection.getConnection();
-			PreparedStatement preparestatement = connection.prepareStatement(query);
+			PreparedStatement preparestatement = connection.prepareStatement(selectQuery);
 			preparestatement.setInt(1,inputid);
 			ResultSet resultset= preparestatement.executeQuery();
 			while(resultset.next()) {
@@ -57,17 +57,17 @@ public class MoviesDetails {
 	public boolean isAvailable(int input) {
 		
 		try {
-			Connection connnection=DBConnection.getConnection();
-			PreparedStatement ps= connnection.prepareStatement("select avl_ticket from movielist where id=? AND avl_ticket>0");
-			ps.setInt(1, input);
-			ResultSet resultset = ps.executeQuery();
-			if(resultset.next()) {
-			int avl_ticket=resultset.getInt("avl_ticket");
+			Connection connection=DBConnection.getConnection();
+			PreparedStatement prepareStatement= connection.prepareStatement("select avl_ticket from movielist where id=? AND avl_ticket>0");
+			prepareStatement.setInt(1, input);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			if(resultSet.next()) {
+			int avl_ticket=resultSet.getInt("avl_ticket");
 			if(avl_ticket>0) {
 				return true;
 			}
 			}
-			connnection.close();
+			connection.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public class MoviesDetails {
 			total=ticketprice*noticket;
 				System.out.println("Total Price: "+total);
 			}
-			Booking booking=new Booking();
+			BookingService booking=new BookingService();
 			booking.addBooking(inputid, noticket, total);
 			
 			connection.close();

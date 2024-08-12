@@ -10,14 +10,15 @@ public class CheckAccountAndPin {
 
 	public boolean isAccCorrect(String acc_no) {
 		try {
-			String query = "select* from AccountDetails where account_no=?";
-			Connection con = DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setString(1, acc_no);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
+			String selectQuery = "select* from AccountDetails where account_no=?";
+			Connection connection = DBConnection.getConnection();
+			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
+			prepareStatement.setString(1, acc_no);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
 				return true;
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -26,16 +27,17 @@ public class CheckAccountAndPin {
 	}
 
 	public boolean isPinCorrect(String acc_no, String pinno) {
-		String query = "select* from AccountDetails where atm_pin=? and account_no=?";
+		String selectQuery = "select* from AccountDetails where atm_pin=? and account_no=?";
 		try {
-			Connection con = DBConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setString(1, pinno);
-			ps.setString(2, acc_no);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
+			Connection connection = DBConnection.getConnection();
+			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
+			prepareStatement.setString(1, pinno);
+			prepareStatement.setString(2, acc_no);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
 				return true;
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

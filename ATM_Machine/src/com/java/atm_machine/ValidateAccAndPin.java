@@ -21,6 +21,7 @@ public class ValidateAccAndPin {
 			System.out.println("Account Number is incorrect");
 			checkAccount();
 		}
+		scanner.close();
 
 	}
 
@@ -40,6 +41,7 @@ public class ValidateAccAndPin {
 			System.out.println("Pin number is incorrect");
 			checkPin(acc_no);
 		}
+		scanner.close();
 	}
 
 	public void checkChooseOption(String acc_no) {
@@ -83,6 +85,7 @@ public class ValidateAccAndPin {
 			System.out.println("you enter wrong input please try again");
 			checkChooseOption(acc_no);
 		}
+		scanner.close();
 	}
 
 }

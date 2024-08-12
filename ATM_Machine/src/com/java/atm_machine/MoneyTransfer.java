@@ -39,14 +39,15 @@ public class MoneyTransfer {
 				preparestatement2.setString(4, transferacc);
 				preparestatement2.setDouble(5, transferamount);
 				preparestatement2.setDouble(6, newbalance1);
-				int row3 = preparestatement2.executeUpdate();
+				preparestatement2.executeUpdate();
+				
 				System.out.println("----------------------");
 				System.out.println("****Your amount has been transfered sucssfully****");
 
 				PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
 				preparestatement3.setDouble(1, transferamount);
 				preparestatement3.setString(2, acc_no);
-				int row2 = preparestatement3.executeUpdate();
+				preparestatement3.executeUpdate();
 
 				TransferedAccount(acc_no, transferacc, transferamount);
 				ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
@@ -56,6 +57,7 @@ public class MoneyTransfer {
 				ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
 				validateaccandpin.checkChooseOption(acc_no);
 			}
+			connection.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -88,14 +90,15 @@ public class MoneyTransfer {
 			preparestatement2.setDouble(4, transferamount);
 			preparestatement2.setString(5, acc_no);
 			preparestatement2.setDouble(6, newbalance);
-			int row = preparestatement2.executeUpdate();
+			preparestatement2.executeUpdate();
 
 			PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
 			preparestatement3.setDouble(1, newbalance);
 			preparestatement3.setString(2, transferacc);
-			int row1 = preparestatement3.executeUpdate();
+			preparestatement3.executeUpdate();
 			System.out.println("****Amount Transfred to: " + transferacc + "****");
 			System.out.println("----------------------");
+			connection.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();

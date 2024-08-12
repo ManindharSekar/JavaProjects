@@ -1,6 +1,5 @@
 package com.java.atm_machine;
 
-import java.util.Scanner;
 
 public class Test_ATM {
 

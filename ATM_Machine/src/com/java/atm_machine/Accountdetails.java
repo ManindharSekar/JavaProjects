@@ -1,11 +1,11 @@
 package com.java.atm_machine;
 
-public class Account_details {
+public class Accountdetails {
 	private String name;
 	private String acc_no;
 	private String pin_no;
 
-	public Account_details(String name, String acc_no2, String pin_no2) {
+	public Accountdetails(String name, String acc_no2, String pin_no2) {
 		this.name = name;
 		this.acc_no = acc_no2;
 		this.pin_no = pin_no2;

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Add_Accounts {
+public class AddAccountService {
 
 	public void add_account() {
 		Scanner scanner = new Scanner(System.in);
@@ -18,8 +18,8 @@ public class Add_Accounts {
 		String pin_no = scanner.next();
 		if (acc_no.matches("[0-9]{8}")) {
 			if (pin_no.matches("[0-9]{4}")) {
-				ArrayList<Account_details> arrayList = new ArrayList<>();
-				arrayList.add(new Account_details(name, acc_no, pin_no));
+				ArrayList<Accountdetails> arrayList = new ArrayList<>();
+				arrayList.add(new Accountdetails(name, acc_no, pin_no));
 				try {
 					String insertQuery = "insert into AccountDetails(name,account_no,atm_pin) values(?,?,?)";
 					Connection connection = DBConnection.getConnection();

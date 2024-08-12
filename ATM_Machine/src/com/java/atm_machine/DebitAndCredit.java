@@ -45,8 +45,8 @@ public class DebitAndCredit {
 			prepareStatement2.executeUpdate();
 
 			System.out.println("****Amount Sucessfully Credit in your account****");
-			ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
-			validateaccandpin.checkChooseOption(acc_no);
+			LoginService validateaccandpin = new LoginService();
+			validateaccandpin.listATMOptions(acc_no);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -59,7 +59,7 @@ public class DebitAndCredit {
 			String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			String insertQuery = "insert into statements(acc_no,date,time,debit,balance) values(?,?,?,?,?)";
 			String updateQuery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
-			
+
 			Connection connection = DBConnection.getConnection();
 
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
@@ -72,7 +72,7 @@ public class DebitAndCredit {
 			if (currentbalance > 0) {
 				newbalance = currentbalance - debitamount;
 
-				if (newbalance >=0) {
+				if (newbalance >= 0) {
 
 					PreparedStatement prepareStatement1 = connection.prepareStatement(insertQuery);
 					prepareStatement1.setString(1, acc_no);
@@ -88,24 +88,23 @@ public class DebitAndCredit {
 					prepareStatement2.executeUpdate();
 
 					System.out.println("*****Take Amount*****");
-					ValidateAccAndPin vap = new ValidateAccAndPin();
-					vap.checkChooseOption(acc_no);
-				}else {
+					LoginService vap = new LoginService();
+					vap.listATMOptions(acc_no);
+				} else {
 					System.out.println("insufficient balance retry");
-					ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
-					validateaccandpin.checkChooseOption(acc_no);
+					LoginService validateaccandpin = new LoginService();
+					validateaccandpin.listATMOptions(acc_no);
 				}
 			} else {
 				System.out.println("insufficient balance retry");
-				ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
-				validateaccandpin.checkChooseOption(acc_no);
+				LoginService validateaccandpin = new LoginService();
+				validateaccandpin.listATMOptions(acc_no);
 			}
 			connection.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 
 	}
 }

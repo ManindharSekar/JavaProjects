@@ -2,7 +2,7 @@ package com.java.atm_machine;
 
 import java.util.Scanner;
 
-public class ValidateAccAndPin {
+public class LoginService {
 
 	public void checkAccount() {
 		CheckAccountAndPin checkaccountnadpin = new CheckAccountAndPin();
@@ -10,7 +10,7 @@ public class ValidateAccAndPin {
 		System.out.println("Account Number");
 		String acc_no = scanner.next();
 		if (acc_no.matches("[0-9]{8}")) {
-			if (checkaccountnadpin.isAccCorrect(acc_no)) {
+			if (checkaccountnadpin.validate(acc_no)) {
 				checkPin(acc_no);
 
 			} else {
@@ -31,8 +31,8 @@ public class ValidateAccAndPin {
 		System.out.println("Enter your pin");
 		String pinno = scanner.next();
 		if (pinno.matches("[0-9]{4}")) {
-			if (checkaccountnadpin.isPinCorrect(acc_no, pinno)) {
-				checkChooseOption(acc_no);
+			if (checkaccountnadpin.validatePin(acc_no, pinno)) {
+				listATMOptions(acc_no);
 			} else {
 				System.out.println("you enter wrong pin please re-enter");
 				checkPin(acc_no);
@@ -44,11 +44,11 @@ public class ValidateAccAndPin {
 		scanner.close();
 	}
 
-	public void checkChooseOption(String acc_no) {
+	public void listATMOptions(String acc_no) {
 
 		DebitAndCredit debitandcredit = new DebitAndCredit();
-		StatementEnquery statementenquery = new StatementEnquery();
-		MoneyTransfer moneytransfer = new MoneyTransfer();
+		AccountStatementService statementenquery = new AccountStatementService();
+		MoneyTransferService moneytransfer = new MoneyTransferService();
 		System.out.println("1.Withdrawal \n2.Deposit \n3.Balance \n4.Money_Transfer \n5.Statement \n6.exit");
 		System.out.println("Choose any option");
 		Scanner scanner = new Scanner(System.in);
@@ -73,17 +73,17 @@ public class ValidateAccAndPin {
 			String transferacc = scanner.next();
 			System.out.println("Enter amount to transfer");
 			double transferamount = scanner.nextDouble();
-			moneytransfer.transferAccount(acc_no, transferacc, transferamount);
+			moneytransfer.transferMoney(acc_no, transferacc, transferamount);
 			break;
 		case 5:
-			statementenquery.statement(acc_no);
+			statementenquery.printStatement(acc_no);
 			break;
 		case 6:
 			System.out.println("Exited");
 			break;
 		default:
 			System.out.println("you enter wrong input please try again");
-			checkChooseOption(acc_no);
+			listATMOptions(acc_no);
 		}
 		scanner.close();
 	}

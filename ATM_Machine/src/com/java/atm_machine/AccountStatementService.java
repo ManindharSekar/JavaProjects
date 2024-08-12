@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class StatementEnquery {
+public class AccountStatementService {
 
 	public void balance(String acc_no) {
 		try {
@@ -22,8 +22,8 @@ public class StatementEnquery {
 			} else {
 				System.out.println("Your balance is: 0");
 			}
-			ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
-			validateaccandpin.checkChooseOption(acc_no);
+			LoginService validateaccandpin = new LoginService();
+			validateaccandpin.listATMOptions(acc_no);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -31,8 +31,8 @@ public class StatementEnquery {
 
 	}
 
-	public void statement(String acc_no) {
-		String selectQuery = "select accountdetails.name,accountdetails.account_no,statements.date,statements.time,statements.credit,statements.debit,statements.balance from accountdetails inner join statements on accountdetails.account_no=statements.acc_no where accountdetails.account_no=?";
+	public void printStatement(String acc_no) {
+		String selectQuery = "select accountdetails.name,accountdetails.account_no,statements.date,statements.time,statements.credit,statements.transaction,statements.debit,statements.balance from accountdetails inner join statements on accountdetails.account_no=statements.acc_no where accountdetails.account_no=?";
 		try {
 			Connection connection = DBConnection.getConnection();
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
@@ -41,20 +41,20 @@ public class StatementEnquery {
 			if (resultSet.next()) {
 				System.out.println("-----Name: " + resultSet.getString(1) + "-----");
 				System.out.println("-----Account No: " + resultSet.getString(2) + "-----");
-				System.out.println("--------------------------------------------------------");
-				System.out.println("Date    \tTime    \tCredit\tdebit\tbalance");
-				System.out.println("--------------------------------------------------------");
+				System.out.println("--------------------------------------------------------------------");
+				System.out.println("Date    \tTime    \tCredit\tTransaction\t debit\tbalance");
+				System.out.println("---------------------------------------------------------------------");
 			}
 			while (resultSet.next()) {
 
-				System.out.println(resultSet.getDate(3) + "\t" + resultSet.getTime(4) + "\t" + resultSet.getDouble(5)
-						+ "\t" + resultSet.getDouble(6) + "\t" + resultSet.getDouble(7));
-				System.out.println("________________________________________________________");
+				System.out.println(resultSet.getDate(3) + "\t" + resultSet.getTime(4) + "\t" + resultSet.getDouble(5)+"\t"+resultSet.getInt(6)
+						+ "    " + resultSet.getDouble(7) + "    " + resultSet.getDouble(8));
+				System.out.println("_____________________________________________________________________");
 				System.out.println();
 			}
-			System.out.println("Your balance is: 0");
-			ValidateAccAndPin validateaccandpin = new ValidateAccAndPin();
-			validateaccandpin.checkChooseOption(acc_no);
+			
+			LoginService validateaccandpin = new LoginService();
+			validateaccandpin.listATMOptions(acc_no);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

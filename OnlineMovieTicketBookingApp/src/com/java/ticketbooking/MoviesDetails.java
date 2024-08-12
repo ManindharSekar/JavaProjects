@@ -15,15 +15,13 @@ public class MoviesDetails {
 			Connection connection=DBConnection.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet resultSet= statement.executeQuery("select*from movielist");
+			System.out.println("__________________________________________________________________________________________________");
+			System.out.println("Movie id\tMovie Name\tTicket Price\tShowTime\tShow Date\tAvailable tickets");
+			System.out.println("__________________________________________________________________________________________________");
 			while(resultSet.next()) {
-				System.out.println("Movie id: "+resultSet.getInt(1));
-				System.out.println("Movie Name: "+resultSet.getString(2));
-				System.out.println("Ticket Price: "+resultSet.getInt(3));
-				System.out.println("Show Time: "+resultSet.getTime(4));
-				System.out.println("Show Date: "+resultSet.getDate(5));
-				System.out.println("Available tickets: "+resultSet.getInt(6));
-				System.out.println();
+				System.out.println(resultSet.getInt(1)+"\t\t"+resultSet.getString(2)+"          "+resultSet.getInt(3)+"\t\t"+resultSet.getTime(4)+"\t"+resultSet.getDate(5)+"\t\t"+resultSet.getInt(6));
 			}
+			System.out.println("__________________________________________________________________________________________________");
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

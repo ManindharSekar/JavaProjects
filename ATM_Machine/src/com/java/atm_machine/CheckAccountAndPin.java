@@ -8,12 +8,12 @@ import java.util.Scanner;
 
 public class CheckAccountAndPin {
 
-	public boolean validateAccount(String acc_no) {
+	public boolean validateAccount(String accountNumber) {
 		try {
 			String selectQuery = "select* from AccountDetails where account_no=?";
 			Connection connection = DBConnection.getConnection();
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
-			prepareStatement.setString(1, acc_no);
+			prepareStatement.setString(1, accountNumber);
 			ResultSet resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
 				return true;
@@ -26,13 +26,13 @@ public class CheckAccountAndPin {
 
 	}
 
-	public boolean validatePin(String acc_no, String pinno) {
+	public boolean validatePin(String accountNumber, String pinNumber) {
 		String selectQuery = "select* from AccountDetails where atm_pin=? and account_no=?";
 		try {
 			Connection connection = DBConnection.getConnection();
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
-			prepareStatement.setString(1, pinno);
-			prepareStatement.setString(2, acc_no);
+			prepareStatement.setString(1, pinNumber);
+			prepareStatement.setString(2, accountNumber);
 			ResultSet resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
 				return true;

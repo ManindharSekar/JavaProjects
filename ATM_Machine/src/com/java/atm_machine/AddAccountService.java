@@ -13,20 +13,20 @@ public class AddAccountService {
 		System.out.println("Enter Name: ");
 		String name = scanner.next();
 		System.out.println("Enter Account no:");
-		String acc_no = scanner.next();
+		String accountNumber = scanner.next();
 		System.out.println("Enter Pin no: ");
-		String pin_no = scanner.next();
-		if (acc_no.matches("[0-9]{8}")) {
-			if (pin_no.matches("[0-9]{4}")) {
+		String pinNumber = scanner.next();
+		if (accountNumber.matches("[0-9]{8}")) {
+			if (pinNumber.matches("[0-9]{4}")) {
 				ArrayList<Accountdetails> arrayList = new ArrayList<>();
-				arrayList.add(new Accountdetails(name, acc_no, pin_no));
+				arrayList.add(new Accountdetails(name, accountNumber, pinNumber));
 				try {
 					String insertQuery = "insert into AccountDetails(name,account_no,atm_pin) values(?,?,?)";
 					Connection connection = DBConnection.getConnection();
 					PreparedStatement prepareStatement = connection.prepareStatement(insertQuery);
 					prepareStatement.setString(1, name);
-					prepareStatement.setString(2, acc_no);
-					prepareStatement.setString(3, pin_no);
+					prepareStatement.setString(2, accountNumber);
+					prepareStatement.setString(3, pinNumber);
 					int row = prepareStatement.executeUpdate();
 					System.out.println("Your Account has Been Created: " + row);
 					connection.close();

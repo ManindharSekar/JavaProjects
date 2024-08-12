@@ -8,12 +8,12 @@ import java.sql.Statement;
 
 public class AccountStatementService {
 
-	public void viewBalance(String acc_no) {
+	public void viewBalance(String accountNumber) {
 		try {
 			String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			Connection connection = DBConnection.getConnection();
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
-			prepareStatement.setString(1, acc_no);
+			prepareStatement.setString(1, accountNumber);
 			ResultSet resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
 				System.out.println("-----------------------------");
@@ -23,7 +23,7 @@ public class AccountStatementService {
 				System.out.println("Your balance is: 0");
 			}
 			LoginService loginService = new LoginService();
-			loginService.listATMOptions(acc_no);
+			loginService.listATMOptions(accountNumber);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -31,12 +31,12 @@ public class AccountStatementService {
 
 	}
 
-	public void printStatement(String acc_no) {
+	public void printStatement(String accountNumber) {
 		String selectQuery = "select accountdetails.name,accountdetails.account_no,statements.date,statements.time,statements.credit,statements.transaction,statements.debit,statements.balance from accountdetails inner join statements on accountdetails.account_no=statements.acc_no where accountdetails.account_no=?";
 		try {
 			Connection connection = DBConnection.getConnection();
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
-			prepareStatement.setString(1, acc_no);
+			prepareStatement.setString(1, accountNumber);
 			ResultSet resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
 				System.out.println("-----Name: " + resultSet.getString(1) + "-----");
@@ -47,14 +47,15 @@ public class AccountStatementService {
 			}
 			while (resultSet.next()) {
 
-				System.out.println(resultSet.getDate(3) + "\t" + resultSet.getTime(4) + "\t" + resultSet.getDouble(5)+"\t"+resultSet.getInt(6)
-						+ "    " + resultSet.getDouble(7) + "    " + resultSet.getDouble(8));
+				System.out.println(resultSet.getDate(3) + "\t" + resultSet.getTime(4) + "\t" + resultSet.getDouble(5)
+						+ "\t" + resultSet.getInt(6) + "    " + resultSet.getDouble(7) + "    "
+						+ resultSet.getDouble(8));
 				System.out.println("_____________________________________________________________________");
 				System.out.println();
 			}
-			
+
 			LoginService loginService = new LoginService();
-			loginService.listATMOptions(acc_no);
+			loginService.listATMOptions(accountNumber);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

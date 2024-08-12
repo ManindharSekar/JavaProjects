@@ -12,10 +12,10 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 public class DebitAndCreditService {
-	double currentbalance;
-	double newbalance;
+	double currentBalance;
+	double newBalance;
 
-	public void deposit(String acc_no, double creditamount) {
+	public void deposit(String acc_no, double creditAmount) {
 		try {
 			String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			String insertQuery = "insert into statements(acc_no,date,time,credit,balance) values(?,?,?,?,?)";
@@ -27,15 +27,15 @@ public class DebitAndCreditService {
 			ResultSet resultSet = prepareStatement.executeQuery();
 
 			if (resultSet.next()) {
-				currentbalance = resultSet.getInt("balance");
+				currentBalance = resultSet.getInt("balance");
 			}
-			double newbalance = currentbalance + creditamount;
+			double newbalance = currentBalance + creditAmount;
 
 			PreparedStatement prepareStatement1 = connection.prepareStatement(insertQuery);
 			prepareStatement1.setString(1, acc_no);
 			prepareStatement1.setDate(2, Date.valueOf(LocalDate.now()));
 			prepareStatement1.setTime(3, Time.valueOf(LocalTime.now()));
-			prepareStatement1.setDouble(4, creditamount);
+			prepareStatement1.setDouble(4, creditAmount);
 			prepareStatement1.setDouble(5, newbalance);
 			prepareStatement1.executeUpdate();
 
@@ -54,7 +54,7 @@ public class DebitAndCreditService {
 
 	}
 
-	public void withdrawl(String acc_no, double debitamount) {
+	public void withdrawl(String accountNumber, double debitAmount) {
 		try {
 			String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			String insertQuery = "insert into statements(acc_no,date,time,debit,balance) values(?,?,?,?,?)";
@@ -63,42 +63,42 @@ public class DebitAndCreditService {
 			Connection connection = DBConnection.getConnection();
 
 			PreparedStatement prepareStatement = connection.prepareStatement(selectQuery);
-			prepareStatement.setString(1, acc_no);
+			prepareStatement.setString(1, accountNumber);
 			ResultSet resultSet = prepareStatement.executeQuery();
 
 			if (resultSet.next()) {
-				currentbalance = resultSet.getInt("balance");
+				currentBalance = resultSet.getInt("balance");
 			}
-			if (currentbalance > 0) {
-				newbalance = currentbalance - debitamount;
+			if (currentBalance > 0) {
+				newBalance = currentBalance - debitAmount;
 
-				if (newbalance >= 0) {
+				if (newBalance >= 0) {
 
 					PreparedStatement prepareStatement1 = connection.prepareStatement(insertQuery);
-					prepareStatement1.setString(1, acc_no);
+					prepareStatement1.setString(1, accountNumber);
 					prepareStatement1.setDate(2, Date.valueOf(LocalDate.now()));
 					prepareStatement1.setTime(3, Time.valueOf(LocalTime.now()));
-					prepareStatement1.setDouble(4, debitamount);
-					prepareStatement1.setDouble(5, newbalance);
+					prepareStatement1.setDouble(4, debitAmount);
+					prepareStatement1.setDouble(5, newBalance);
 					prepareStatement1.executeUpdate();
 
 					PreparedStatement prepareStatement2 = connection.prepareStatement(updateQuery);
-					prepareStatement2.setDouble(1, newbalance);
-					prepareStatement2.setString(2, acc_no);
+					prepareStatement2.setDouble(1, newBalance);
+					prepareStatement2.setString(2, accountNumber);
 					prepareStatement2.executeUpdate();
 
 					System.out.println("*****Take Amount*****");
 					LoginService loginService = new LoginService();
-					loginService.listATMOptions(acc_no);
+					loginService.listATMOptions(accountNumber);
 				} else {
 					System.out.println("insufficient balance retry");
 					LoginService loginService = new LoginService();
-					loginService.listATMOptions(acc_no);
+					loginService.listATMOptions(accountNumber);
 				}
 			} else {
 				System.out.println("insufficient balance retry");
 				LoginService loginService = new LoginService();
-				loginService.listATMOptions(acc_no);
+				loginService.listATMOptions(accountNumber);
 			}
 			connection.close();
 

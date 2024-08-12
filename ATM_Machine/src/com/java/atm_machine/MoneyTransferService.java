@@ -10,10 +10,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class MoneyTransferService {
-	int currentbalance;
-	int currentbalance1;
+	int currentBalance;
+	int currentBalance1;
 
-	public void transferMoney(String fromAccount, String toAccount, double sendingAmount) {
+	public void sendMoney(String fromAccount, String toAccount, double sendingAmount) {
 		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String updateQuery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String insertQuery = "insert into statements(acc_no,date,time,transaction,debit,balance) values(?,?,?,?,?,?)";
@@ -21,35 +21,35 @@ public class MoneyTransferService {
 		try {
 			Connection connection = DBConnection.getConnection();
 
-			PreparedStatement preparestatement1 = connection.prepareStatement(selectQuery);
-			preparestatement1.setString(1, fromAccount);
-			ResultSet resultSet = preparestatement1.executeQuery();
+			PreparedStatement prepareStatement1 = connection.prepareStatement(selectQuery);
+			prepareStatement1.setString(1, fromAccount);
+			ResultSet resultSet = prepareStatement1.executeQuery();
 
 			if (resultSet.next()) {
-				currentbalance = resultSet.getInt("balance");
+				currentBalance = resultSet.getInt("balance");
 			}
-			if (currentbalance > 0 && currentbalance >= sendingAmount) {
+			if (currentBalance > 0 && currentBalance >= sendingAmount) {
 
-				double newbalance1 = currentbalance - sendingAmount;
+				double newBalance1 = currentBalance - sendingAmount;
 
-				PreparedStatement preparestatement2 = connection.prepareStatement(insertQuery);
-				preparestatement2.setString(1, fromAccount);
-				preparestatement2.setDate(2, Date.valueOf(LocalDate.now()));
-				preparestatement2.setTime(3, Time.valueOf(LocalTime.now()));
-				preparestatement2.setString(4, toAccount);
-				preparestatement2.setDouble(5, sendingAmount);
-				preparestatement2.setDouble(6, newbalance1);
-				preparestatement2.executeUpdate();
+				PreparedStatement prepareStatement2 = connection.prepareStatement(insertQuery);
+				prepareStatement2.setString(1, fromAccount);
+				prepareStatement2.setDate(2, Date.valueOf(LocalDate.now()));
+				prepareStatement2.setTime(3, Time.valueOf(LocalTime.now()));
+				prepareStatement2.setString(4, toAccount);
+				prepareStatement2.setDouble(5, sendingAmount);
+				prepareStatement2.setDouble(6, newBalance1);
+				prepareStatement2.executeUpdate();
 
 				System.out.println("----------------------");
 				System.out.println("****Your amount has been transfered sucssfully****");
 
 				PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
-				preparestatement3.setDouble(1, newbalance1);
+				preparestatement3.setDouble(1, newBalance1);
 				preparestatement3.setString(2, fromAccount);
 				preparestatement3.executeUpdate();
 
-				TransferedMoney(fromAccount, toAccount, sendingAmount);
+				receiveMoney(fromAccount, toAccount, sendingAmount);
 				LoginService loginService = new LoginService();
 				loginService.listATMOptions(fromAccount);
 			} else {
@@ -65,7 +65,7 @@ public class MoneyTransferService {
 
 	}
 
-	public void TransferedMoney(String fromAccount, String toAccount, double receivingAmount) {
+	public void receiveMoney(String fromAccount, String toAccount, double receivingAmount) {
 		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String updateQuery = "update statements set balance = ? where acc_no = ? and id ORDER BY id DESC LIMIT 1";
 		String insertQuery = "insert into statements(acc_no,date,time,credit,transaction,balance) values(?,?,?,?,?,?)";
@@ -73,27 +73,27 @@ public class MoneyTransferService {
 		try {
 			Connection connection = DBConnection.getConnection();
 
-			PreparedStatement preparestatement1 = connection.prepareStatement(selectQuery);
-			preparestatement1.setString(1, toAccount);
-			ResultSet resultSet = preparestatement1.executeQuery();
+			PreparedStatement prepareStatement1 = connection.prepareStatement(selectQuery);
+			prepareStatement1.setString(1, toAccount);
+			ResultSet resultSet = prepareStatement1.executeQuery();
 
 			if (resultSet.next()) {
-				currentbalance1 = resultSet.getInt("balance");
+				currentBalance1 = resultSet.getInt("balance");
 			}
 
-			double newbalance = currentbalance1 + receivingAmount;
+			double newBalance = currentBalance1 + receivingAmount;
 
-			PreparedStatement preparestatement2 = connection.prepareStatement(insertQuery);
-			preparestatement2.setString(1, toAccount);
-			preparestatement2.setDate(2, Date.valueOf(LocalDate.now()));
-			preparestatement2.setTime(3, Time.valueOf(LocalTime.now()));
-			preparestatement2.setDouble(4, receivingAmount);
-			preparestatement2.setString(5, toAccount);
-			preparestatement2.setDouble(6, newbalance);
-			preparestatement2.executeUpdate();
+			PreparedStatement prepareStatement2 = connection.prepareStatement(insertQuery);
+			prepareStatement2.setString(1, toAccount);
+			prepareStatement2.setDate(2, Date.valueOf(LocalDate.now()));
+			prepareStatement2.setTime(3, Time.valueOf(LocalTime.now()));
+			prepareStatement2.setDouble(4, receivingAmount);
+			prepareStatement2.setString(5, toAccount);
+			prepareStatement2.setDouble(6, newBalance);
+			prepareStatement2.executeUpdate();
 
 			PreparedStatement preparestatement3 = connection.prepareStatement(updateQuery);
-			preparestatement3.setDouble(1, newbalance);
+			preparestatement3.setDouble(1, newBalance);
 			preparestatement3.setString(2, toAccount);
 			preparestatement3.executeUpdate();
 			System.out.println("****Amount Transfred to: " + toAccount + "****");

@@ -25,26 +25,26 @@ public class LoginService {
 
 	}
 
-	public void checkPin(String acc_no) {
+	public void checkPin(String accountNumber) {
 		CheckAccountAndPin checkAccountAndPin = new CheckAccountAndPin();
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter your pin");
-		String pinno = scanner.next();
-		if (pinno.matches("[0-9]{4}")) {
-			if (checkAccountAndPin.validatePin(acc_no, pinno)) {
-				listATMOptions(acc_no);
+		String pinNumber = scanner.next();
+		if (pinNumber.matches("[0-9]{4}")) {
+			if (checkAccountAndPin.validatePin(accountNumber, pinNumber)) {
+				listATMOptions(accountNumber);
 			} else {
 				System.out.println("you enter wrong pin please re-enter");
-				checkPin(acc_no);
+				checkPin(accountNumber);
 			}
 		} else {
 			System.out.println("Pin number is incorrect");
-			checkPin(acc_no);
+			checkPin(accountNumber);
 		}
 		scanner.close();
 	}
 
-	public void listATMOptions(String acc_no) {
+	public void listATMOptions(String accountNumber) {
 
 		DebitAndCreditService debitAndCreditService = new DebitAndCreditService();
 		AccountStatementService accountStatementService = new AccountStatementService();
@@ -58,39 +58,39 @@ public class LoginService {
 		switch (chooseOption) {
 		case 1:
 			System.out.println("Enter Withdrawl Amount");
-			double depitamount = scanner.nextDouble();
-			debitAndCreditService.withdrawl(acc_no, depitamount);
+			double depitAmount = scanner.nextDouble();
+			debitAndCreditService.withdrawl(accountNumber, depitAmount);
 			break;
 		case 2:
 			System.out.println("Enter your deposit amount");
-			double creditamount = scanner.nextDouble();
-			debitAndCreditService.deposit(acc_no, creditamount);
+			double creditAmount = scanner.nextDouble();
+			debitAndCreditService.deposit(accountNumber, creditAmount);
 			break;
 		case 3:
-			accountStatementService.viewBalance(acc_no);
+			accountStatementService.viewBalance(accountNumber);
 			break;
 		case 4:
 			System.out.println("Enter Transfer Account no");
-			String transferacc = scanner.next();
-			
-			if (checkAccountAndPin.validateAccount(transferacc)) {
+			String reciverAccountNumber = scanner.next();
+
+			if (checkAccountAndPin.validateAccount(reciverAccountNumber)) {
 				System.out.println("Enter amount to transfer");
-				double transferamount = scanner.nextDouble();
-				moneyTransferService.transferMoney(acc_no, transferacc, transferamount);
+				double transferAmount = scanner.nextDouble();
+				moneyTransferService.sendMoney(accountNumber, reciverAccountNumber, transferAmount);
 			} else {
 				System.out.println("You Enter Wrong Account Number try again");
-				listATMOptions(acc_no);
+				listATMOptions(accountNumber);
 			}
 			break;
 		case 5:
-			accountStatementService.printStatement(acc_no);
+			accountStatementService.printStatement(accountNumber);
 			break;
 		case 6:
 			System.out.println("Exited");
 			break;
 		default:
 			System.out.println("you enter wrong input please try again");
-			listATMOptions(acc_no);
+			listATMOptions(accountNumber);
 		}
 		scanner.close();
 	}

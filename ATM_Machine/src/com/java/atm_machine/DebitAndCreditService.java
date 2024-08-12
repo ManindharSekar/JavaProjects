@@ -45,8 +45,8 @@ public class DebitAndCreditService {
 			prepareStatement2.executeUpdate();
 
 			System.out.println("****Amount Sucessfully Credit in your account****");
-			LoginService validateaccandpin = new LoginService();
-			validateaccandpin.listATMOptions(acc_no);
+			LoginService loginService = new LoginService();
+			loginService.listATMOptions(acc_no);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -88,17 +88,17 @@ public class DebitAndCreditService {
 					prepareStatement2.executeUpdate();
 
 					System.out.println("*****Take Amount*****");
-					LoginService vap = new LoginService();
-					vap.listATMOptions(acc_no);
+					LoginService loginService = new LoginService();
+					loginService.listATMOptions(acc_no);
 				} else {
 					System.out.println("insufficient balance retry");
-					LoginService validateaccandpin = new LoginService();
-					validateaccandpin.listATMOptions(acc_no);
+					LoginService loginService = new LoginService();
+					loginService.listATMOptions(acc_no);
 				}
 			} else {
 				System.out.println("insufficient balance retry");
-				LoginService validateaccandpin = new LoginService();
-				validateaccandpin.listATMOptions(acc_no);
+				LoginService loginService = new LoginService();
+				loginService.listATMOptions(acc_no);
 			}
 			connection.close();
 

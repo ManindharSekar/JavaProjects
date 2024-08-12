@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class AccountStatementService {
 
-	public void balance(String acc_no) {
+	public void viewBalance(String acc_no) {
 		try {
 			String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
 			Connection connection = DBConnection.getConnection();
@@ -22,8 +22,8 @@ public class AccountStatementService {
 			} else {
 				System.out.println("Your balance is: 0");
 			}
-			LoginService validateaccandpin = new LoginService();
-			validateaccandpin.listATMOptions(acc_no);
+			LoginService loginService = new LoginService();
+			loginService.listATMOptions(acc_no);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -53,8 +53,8 @@ public class AccountStatementService {
 				System.out.println();
 			}
 			
-			LoginService validateaccandpin = new LoginService();
-			validateaccandpin.listATMOptions(acc_no);
+			LoginService loginService = new LoginService();
+			loginService.listATMOptions(acc_no);
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

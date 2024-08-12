@@ -5,9 +5,9 @@ public class StartATM {
 	public static void main(String[] args) {
 		//AddAccountService addAccountService=new AddAccountService();
 		//addAccountService.add_account();
-		LoginService validateaccandpin = new LoginService();
+		LoginService loginService = new LoginService();
 		System.out.println("Welcome To My Bank ATM.");
-		validateaccandpin.checkAccount();
+		loginService.checkAccount();
 
 	}
 

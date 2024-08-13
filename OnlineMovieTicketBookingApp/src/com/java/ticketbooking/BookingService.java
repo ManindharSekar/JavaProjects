@@ -17,10 +17,10 @@ public class BookingService {
 		try {
 			Connection connection=DBConnection.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
-			Scanner scanner=new Scanner(System.in);
 			System.out.println("Enter Your Bookig id");
-			int userId=scanner.nextInt();
-			preparedStatement.setInt(1,userId);
+			Scanner scanner=new Scanner(System.in);
+			int userID = scanner.nextInt();
+			preparedStatement.setInt(1,userID);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			if(resultSet.next()) {
 				System.out.println("Your booking id: "+resultSet.getInt(1));
@@ -30,8 +30,10 @@ public class BookingService {
 				System.out.println("Show Time: "+resultSet.getTime(5));
 				System.out.println("Number of Ticket: "+resultSet.getInt(6));
 				System.out.println("Total Price: "+resultSet.getInt(7));
+			}else {
+				System.out.println("you enter wrong input try again");
+				viewBookings();
 			}
-			scanner.close();
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

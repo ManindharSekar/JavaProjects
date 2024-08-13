@@ -6,6 +6,7 @@ public class ChooseMovie {
 	public void selectMovie() {
 		MoviesDetails moviesDetails = new MoviesDetails();
 		BookingService bookingService = new BookingService();
+		ChooseMovie chooseMovie = new ChooseMovie();
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("\nEnter 1 for BookTicket \n------2 for view your booked Ticket \n------3 for Exit");
 		int chooseOption = scanner.nextInt();
@@ -20,14 +21,16 @@ public class ChooseMovie {
 
 			} else {
 				System.out.println("\nticket not available");
+				chooseMovie.selectMovie();
 			}
 
 		} else if (chooseOption == 2) {
+			
 			bookingService.viewBookings();
 
-		} else if(chooseOption==3){
+		} else if (chooseOption == 3) {
 			System.out.println("Exited");
-		}else {
+		} else {
 			System.out.println("You Enter Wrong Input Try Again");
 			selectMovie();
 		}

@@ -15,8 +15,8 @@ public class MoneyTransferService {
 
 	public void sendMoney(String fromAccount, String toAccount, double sendingAmount) {
 		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
-		String updateQuery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
 		String insertQuery = "insert into statements(acc_no,date,time,transaction,debit,balance) values(?,?,?,?,?,?)";
+		String updateQuery = "update statements set balance=? where acc_no=? and id ORDER BY id DESC LIMIT 1";
 
 		try {
 			Connection connection = DBConnection.getConnection();
@@ -67,9 +67,9 @@ public class MoneyTransferService {
 
 	public void receiveMoney(String fromAccount, String toAccount, double receivingAmount) {
 		String selectQuery = "select balance from statements where acc_no=? and id ORDER BY id DESC LIMIT 1";
-		String updateQuery = "update statements set balance = ? where acc_no = ? and id ORDER BY id DESC LIMIT 1";
 		String insertQuery = "insert into statements(acc_no,date,time,credit,transaction,balance) values(?,?,?,?,?,?)";
-
+		String updateQuery = "update statements set balance = ? where acc_no = ? and id ORDER BY id DESC LIMIT 1";
+		
 		try {
 			Connection connection = DBConnection.getConnection();
 
